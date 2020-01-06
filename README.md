@@ -83,7 +83,7 @@
         <li> dodano kare za anulowanie rezerwacji pojazdu; dzień, dwa lub trzy przed startem rezerwacji </li>
         <li> refaktoring kodu </li>
     </ul>        
-    
+<img src="/images/car_id_1/Transpo_G70_TA-518126.jpg" alt="" width="300" height="300">  
     
     
     
