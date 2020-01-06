@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+    <meta charset="UTF-8">
+    <title> Users list</title>
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li>
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:if="${isAdmin}" href="#">Administrator panel</a>-->
+                <!--                </li>-->
+                <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <br>
+    <span class="text-center">
+           <h2> Users list </h2>
+    </span>
+    <div th:if="${!pageUsers.empty}">
+    <div class="row">
+        <div class="col">
+            <div class="float-left">
+                <form class="form-inline">
+                    <div class="form-group mb-2">
+                        <label class="form-check-label"> Show </label>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <select name="pageSize" class="form-control" onchange="this.form.submit()">
+                            <option th:each="pages : ${T(net.atos.model.enums.Pagination).values()}"
+                                    th:value="${pages.description}"
+                                    th:text="${pages.description}"
+                                    th:selected="${pages.description} == ${selectedPageSize}">
+                                ></option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-check-label"> entries </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="float-right">
+                <form class="form-inline" method="get" action="/users/list">
+                    <div class="form-group mb-2">
+                        <label class="form-check-label"> Search: </label>
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <input type="text" name="value" class="form-control" >
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2"> Find </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"> Id </th>
+            <th scope="col"> Last name </th>
+            <th scope="col"> First name </th>
+            <th scope="col"> Email address </th>
+            <th scope="col"> is Admin </th>
+            <th scope="col"> Status </th>
+            <th scope="col"> Actions </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${pageUsers.empty}">
+            <td colspan="7" class="text-center text-uppercase"> No users available. </td>
+        </tr>
+
+            <tr th:each="user, state: ${pageUsers.content}">
+                <td th:text="${state.count+pageUsers.number*selectedPageSize}"> </td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.email}"></td>
+
+                <div th:if="${user.isAdmin() == true}">
+                    <td th:text="'Y'"> </td>
+                </div>
+                <div th:if="${user.isAdmin() == false}">
+                    <td th:text="'N'"> </td>
+                </div>
+
+                <div th:if="${user.status.equals(true)}">
+                    <td class="text-success" th:text="'Active'"> </td>
+                </div>
+                <div th:if="${user.status.equals(false)}">
+                    <td class="text-danger" th:text="'Inactive'"> </td>
+                </div>
+
+                <td>
+
+                    <div class="form-inline">
+
+                        <form th:action="@{/users/userdetails/{id}(id=${user.user_id})}" th:method="get" th:object="${UserDto}" >
+                            <input class="btn btn-info" type="submit" value="Edit">
+                        </form>
+
+                        <div  th:if="${user.status.equals(true)}">
+                            <form th:action="@{/users/changeuserstatus/{id}(id=${user.user_id})}"  th:method="post" th:object="${UserDto}" >
+                                <input class="btn btn-dark" type="submit" value="Deactivate">
+                            </form>
+                        </div>
+                        <div  th:if="${user.status.equals(false)}">
+                            <form th:action="@{/users/changeuserstatus/{id}(id=${user.user_id})}"  th:method="post" th:object="${UserDto}" >
+                                <input class="btn btn-success" type="submit" value="Activate">
+                            </form>
+                        </div>
+
+                        <div th:if="${user.isAdmin() == true}">
+                            <form th:action="@{/roles/removeAdminRole/{id}(id=${user.user_id})}" th:method="post" th:object="${UserDto}">
+                                <input class="btn btn-secondary" type="submit" value="Revoke Admin role" >
+                            </form>
+                        </div>
+                        <div th:if="${user.isAdmin() == false}">
+                            <form th:action="@{/roles/addAdminRole/{user_id}(user_id=${user.user_id})}" th:method="post" th:object="${UserDto}">
+                                <input class="btn btn-secondary" type="submit" value="Add Admin role" >
+                            </form>
+                        </div>
+
+                        <form th:action="@{/users/delete/{id}(id=${user.user_id})}"  th:method="post" th:object="${UserDto}" >
+                            <input class="btn btn-danger" type="submit" value="Delete">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<div th:if="${!pageUsers.empty}">
+    <div class="row">
+        <div class="col">
+            <p th:text="'Showing '+${(pageUsers.number * selectedPageSize)+1}+' to '+${(pageUsers.number * selectedPageSize)+pageUsers.content.size()}+ ' of '+${pageUsers.TotalElements}+' entries'"></p>
+        </div>
+        <div class="col">
+            <nav>
+                <ul class="pagination justify-content-end">
+
+                    <div th:if="${pageUsers.hasPrevious()}">
+                        <li class="page-item"><a class="page-link" th:href="@{'/users/list?pageSize='+${selectedPageSize}+'&pageNumber='+${pageUsers.number-1}}" >Previous page</a></li>
+                    </div>
+                    <div th:unless="${pageUsers.hasPrevious()}">
+                        <li class="page-item disabled"><a class="page-link"> Previous page </a></li>
+                    </div>
+
+                    <div th:if="${pageUsers.hasNext()}">
+                        <li class="page-item"><a class="page-link" th:href="@{'/users/list?pageSize='+${selectedPageSize}+'&pageNumber='+${pageUsers.number+1}}" >Next page</a></li>
+                    </div>
+                    <div th:unless="${pageUsers.hasNext()}">
+                        <li class="page-item disabled"><a class="page-link" > Next page </a></li>
+                    </div>
+                </ul>
+            </nav>
+        </div>
+
+
+
+        </div>
+
+</div>
+
+
+</div>
+
+
+<script src="../vendor/jquery/jquery.slim.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

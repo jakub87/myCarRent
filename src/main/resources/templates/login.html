@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+
+<head>
+
+    <title>Login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <br>
+
+                <span class="text-center">
+                <h2> Login </h2>
+            </span>
+
+
+            <form th:action="@{/login-process}" th:method="post" class="user">
+                <div class="form-group">
+                    <label class="form-check-label" > Email address: </label>
+                    <input type="text" name="email" class="form-control" placeholder="Enter email" >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check-label"> Password: </label>
+                    <input type="password" name="password" class="form-control" placeholder="Password">
+                </div>
+
+                <div class="form-check-label">
+                    <label class="form-check-label"> Don't have an account? <a href="/registration">Sign up</a></label>
+                </div>
+
+                <div class="form-check-label">
+                    <label class="form-check-label"> Forgotten password? <a href="/recoverypasswordstep1">Recover password</a></label>
+                </div>
+
+                <div class="alert alert-danger text-center" th:if="${not #strings.isEmpty(error)}">
+                    <p th:text="${error}"></p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+
+            </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.slim.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

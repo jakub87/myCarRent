@@ -1,0 +1,58 @@
+div.gallery {
+    margin: 5px;
+    /*border: 1px solid #ccc;*/
+    float: left;
+    width: 180px;
+}
+
+div.gallery img {
+    width: 100%;
+    height: auto;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+a:hover{
+    color: greenyellow;
+    background-color: black;
+}
+
+table {
+    display: block;
+    font-family: sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 115%;
+    overflow: auto;
+    width: auto;
+}
+th {
+    background-color: rgb(112, 196, 105);
+    color: white;
+    font-weight: normal;
+    padding: 20px 30px;
+    text-align: center;
+}
+td {
+    background-color: rgb(238, 238, 238);
+    color: rgb(111, 111, 111);
+    padding: 10px 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    grid-template-rows: 0;
+    grid-template-areas: "menu dupa";
+}
+
+.menu { grid-area: menu; }
+
+.lists { grid-area: dupa; }
+
+
+
+
+
+

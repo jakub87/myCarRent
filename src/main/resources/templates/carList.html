@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" >
+ <head>
+
+    <title>Car list</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+
+
+
+    <div class="row">
+        <div class="col-sm-3">
+
+             <br>
+            <form th:action="@{/allcars}" th:object="${carSearch}" method="get">
+
+                <div class="form-group">
+                    <label class="form-check-label" > Brand: </label>
+                    <select class="form-control" name="mark">
+                        <option></option>
+                        <option th:each="uniqueMark : ${uniqueMarks}"
+                                th:value="${uniqueMark}" th:text="${uniqueMark}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check-label" > Model: </label>
+                    <select class="form-control" name="model">
+                        <option ></option>
+                        <option th:each="uniqueModel : ${uniqueModels}"
+                                th:value="${uniqueModel}" th:text="${uniqueModel}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check-label" > Year: </label>
+                </div>
+
+                <div class="form-inline">
+                    <div class="form-group mb-2">
+                        <label class="form-check-label" > From </label>
+                        <input type="text" class="form-control" size="3" maxlength="4" th:field="*{yearFrom}" />
+                        <label class="form-check-label" > To </label>
+                        <input type="text" class="form-control" size="3" maxlength="4" th:field="*{yearTo}"/> </p>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="form-check-label" > Price: </label>
+                </div>
+
+                <div class="form-inline">
+                    <div class="form-group mb-2">
+                        <label class="form-check-label" > From </label>
+                        <input class="form-control" type="text" size="3" maxlength="4" th:field="*{priceFrom}"/>
+                        <label class="form-check-label" > To </label>
+                        <input class="form-control" type="text" size="3" maxlength="4" th:field="*{priceTo}"/>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label class="form-check-label" > Sorting: </label>
+
+                    <select class="form-control" name="sorting">
+                        <option th:each="sort : ${T(net.atos.model.enums.Sorting).values()}"
+                                th:value="${sort}"
+                                th:text="${sort.description}"
+                                th:selected="${sort.description} == ${selectedSorting}">
+                               >
+                        </option>
+                    </select>
+                </div>
+
+                <input class="btn btn-primary" type="submit" value="Search">
+            </form>
+
+
+        </div>
+
+        <div class="col-sm-9">
+            <br>
+
+            <div class="bg-success text-white" th:if="${not #strings.isEmpty(result)}">
+            <p th:text="${result}"></p>
+            </div>
+
+
+            <table class="table table-hover">
+                <tbody>
+                <tr th:if="${carList.empty}">
+                    <td colspan="3" class="text-center text-uppercase"> No Cars Available. </td>
+                </tr>
+                <tr th:each="car : ${carList.content}" >
+                    <td>
+                        <div th:each="image, iterStat : ${car.pictures}"  th:if="${iterStat.index == 0}" >
+                            <img class="img-thumbnail" th:src="${#strings.substring(image.pathOfURL,73)}" alt="here there should be an image"  width="200px" height="150px">
+<!--                            <p th:text="${#strings.substring(image.pathOfURL,93)}"></p>-->
+                        </div>
+                    </td>
+                    <td >  <a th:href="@{/detailsofcar/{id}(id=${car.car_id})}" > <p th:text="${car.mark}+' '+${car.model}" > </a> </td>
+                    <td>  <p th:text="${car.price}+' zł'" > </td>
+                    <td>
+                        <!--    /cars/delete/{id}        <form th:action="@{/carEquipments/delete/{id}(id=${equipment.equipments_id})}" th:method="post" th:object="${EquipmentsDto}" >-->
+                        <form th:action="@{/cars/delete/{id}(id=${car.car_id})}" th:method="post" th:object="${carDto}"  >
+                            <input th:if="${isAdmin}" type="submit" class="btn btn-danger" value="Delete">
+                        </form>
+                        <form th:action="@{/cars/edit/{id}(id=${car.car_id})}" th:method="get" th:object="${carDto}"  >
+                            <input th:if="${isAdmin}" type="submit" class="btn btn-secondary" value="Edit">
+                        </form>
+
+                    </td>
+
+
+                </tr>
+                </tbody>
+            </table>
+
+        <div th:if="${!carList.empty}">
+            <div class="row">
+            <div class="col">
+                <p th:text="'Showing '+${(carList.number * 10)+1}+' to '+${(carList.number * 10)+carList.content.size()}+ ' of '+${carList.TotalElements}+' entries'"></p>
+            </div>
+                <div class="col">
+            <nav>
+                <ul class="pagination justify-content-end">
+
+                <div th:if="${carList.hasPrevious()}">
+                    <li class="page-item"><a class="page-link" th:href="@{'/allcars?pageSize='+${selectedPageSize}+'&pageNumber='+${carList.number-1}}" >Previous page</a></li>
+                </div>
+                <div th:unless="${carList.hasPrevious()}">
+                    <li class="page-item disabled"><a class="page-link">Previous page</a></li>
+                </div>
+
+                <div th:if="${carList.hasNext()}">
+                    <li class="page-item"><a class="page-link" th:href="@{'/allcars?pageSize='+${selectedPageSize}+'&pageNumber='+${carList.number+1}}" >Next page</a></li>
+                </div>
+                <div th:unless="${carList.hasNext()}">
+                    <li class="page-item disabled"><a class="page-link" >Next page</a></li>
+                </div>
+            </ul>
+            </nav>
+                </div>
+        </div>
+        </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.slim.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

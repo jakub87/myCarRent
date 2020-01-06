@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/reservation.js"></script>
+    <meta charset="UTF-8">
+    <title> Car details </title>
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li>
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                 <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<!-- Page Content -->
+
+<div class="container">
+    <br>
+
+    <div class="row">
+        <div class="col">
+
+        </div>
+        <div class="col-9">
+
+            <div class="bg-success text-white text-center" th:if="${success != null}">
+                <p> Car has been reserved! </p>
+            </div>
+            <div class="bg-danger text-white text-center" th:if="${emptyDates != null}">
+                <p>  Error! Please select reservation dates. </p>
+            </div>
+            <div class="bg-danger text-white text-center" th:if="${occupied != null}">
+                <p th:text="${occupied}"> </p>
+            </div>
+            <div class="bg-danger text-white text-center" th:if="${startDateInPast != null}">
+                <p> Error! Start date is in the past. </p>
+            </div>
+            <div class="bg-danger text-white text-center" th:if="${endDateInPast != null}">
+                <p> Error! End date is in the past.  </p>
+            </div>
+            <div class="bg-danger text-white text-center" th:if="${startDateLaterThanEndDate != null}">
+                <p> Error! Start date is later than end date.  </p>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h2 th:text="${car.mark}+' '+${car.model}">  </h2>
+                </div>
+                <div class="col">
+                    <div class="float-right">
+                        <button type="button" class="list-group-item list-group-item-action active disabled" th:text="${car.price}+' zl'">  </button>
+                        <input id="carPrice" th:value="${car.price}" hidden="true">
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active" th:each="image, iterStat : ${car.pictures}"  th:if="${iterStat.index == 0}">
+                        <img class="d-block w-100" th:src="${#strings.substring(image.pathOfURL,72)}"  alt="here should be image">
+
+                    </div>
+
+                    <div class="carousel-item" th:each="image, iterStat : ${car.pictures}"  th:if="${iterStat.index > 0}">
+                        <img class="d-block w-100" th:src="${#strings.substring(image.pathOfURL,72)}"  alt="here should be image" >
+
+                    </div>
+
+                </div>
+
+                <div th:each="image, iterStat : ${car.pictures}"  th:if="${iterStat.index > 0}">
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                       <span class="sr-only">Next</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <hr class="mb-4">
+
+            <h4> Car status </h4>
+            <div class="row">
+                <div class="col-6 col-md-4">
+                    <button type="button" class="list-group-item list-group-item-action active disabled text-center" th:text="${car.status}">  </button>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <h4> Car details </h4>
+            <ul style="list-style: none">
+                <li th:text="'Type: '+${car.type}"></li>
+                <li th:text="'Color: '+${car.color}"></li>
+                <li th:text="'Year of production: '+${car.year}"></li>
+                <li th:text="'Price per day: '+${car.price}+' zl'"></li>
+            </ul>
+            <hr class="mb-4">
+            <h4> Equipments </h4>
+
+            <ul>
+                <li class="list-inline-item" th:each="equip : ${car.equipments}">
+                        <p class="list-inline" th:text="'- '+${equip.equipmentDescription}"> </p>
+                </li>
+            </ul>
+
+            <hr class="mb-4">
+            <h4> Actions </h4>
+
+            <div class="one">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#popupReservation"> Reserve </button>
+
+                <div class="modal" id="popupReservation" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title "> Reservation details </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                            <form th:action="@{/user/makeorder/{id}(id=${car.car_id})}" th:object="${orderDto}" method="post">
+                                                <div class="row">
+                                                    <div class="col">
+
+                                                        <p class="font-weight-bold text-center" th:text="${car.mark}+' '+${car.model}"></p>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="form-check-label "> Start date </label>
+                                                </div>
+                                                    <div class="col">
+                                                        <input id="startDate" class="date-picker" type="date" th:field="*{startDate}" />
+                                                    </div>
+                                                    <div class="col">
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="form-check-label "> End date </label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input id="endDate" class="date-picker" type="date" th:field="*{endDate}" />
+                                                    </div>
+                                                    <div class="col">
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span id="summary"> </span>
+                                                        <br>
+                                                        <span id="duration"> </span>
+                                                        <br>
+                                                        <span id="cost"> </span>
+                                                        <br>
+                                                    </div>
+
+                                                </div>
+                                                    <div class="one">
+                                                        <input type="submit" class="btn btn-success" value="Confirm reservation" />
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Close </button>
+                                                    </div>
+                                            </form>
+                            </div>
+
+                       </div>
+                    </div>
+                </div>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#popupReservationSlots"> Check reservations slots </button>
+
+
+            <div class="modal" id="popupReservationSlots" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"> Upcoming reservations </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col"> From </th>
+                                                        <th scope="col"> To </th>
+                                                    </tr>
+                                                </thead>
+                                                <tr th:if="${resevationSlots.empty}">
+                                                    <td class="text-center" colspan="2"> No reservations </td>
+                                                </tr>
+                                                <tr th:each="reservation : ${resevationSlots}" >
+                                                    <td th:text="${reservation.startDate}"></td>
+                                                    <td th:text="${reservation.returnDate}"></td>
+                                                </tr>
+
+                                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"> Close </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div> <!-- koniec one -->
+
+            <hr class="mb-4">
+            <h4> Comments </h4>
+
+                    <form th:action="@{'/message/add/'+${car.car_id}+'&'+${logged_email}}" th:object="${messageDto}" method="post">
+
+                        <textarea rows="4" class="form-control" maxlength="300" th:field="*{content}" ></textarea>
+                        <br>
+                        <input type="submit" class="btn btn-primary" value="Add comment">
+                    </form>
+
+            <br>
+                    <table>
+                        <tr th:each="comment : ${comments}" >
+                            <td>
+                                    <p class="font-weight-bolder" th:text="${comment.author.email} + ' Posted on '+${comment.creationDate}" > </p>
+                                    <p th:text="${comment.content}"></p>
+                            </td>
+                        </tr>
+                    </table>
+        </div>
+
+        <div class="col">
+
+        </div>
+    </div>
+</div>
+
+
+<script src="../vendor/jquery/jquery.slim.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>

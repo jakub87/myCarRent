@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/addCarValidation.js"></script>
+    <meta charset="UTF-8">
+    <title>Edit car</title>
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:if="${isAdmin}" href="#">Administrator panel</a>-->
+                <!--                </li>-->
+                <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <br>
+    <span class="text-center">
+                     <h2> Car edit </h2>
+             </span>
+
+    <div class="row">
+        <div class="col">
+
+        </div>
+        <div class="col-6">
+            <span class="text-center">
+                <p class="text-info" th:text="${result}"></p>
+            </span>
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-sm">
+            <form th:action="@{/cars/edit/{car_id}(car_id=${car.car_id})}" th:object="${carDto}" method="post" enctype="multipart/form-data">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Brand: </label>
+                <div class="col-sm-8">
+                    <input id="brand" type="text" class="form-control" th:value="${car.mark}" th:name="mark">
+                    <span class="validator"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Model: </label>
+                <div class="col-sm-8">
+                    <input id="model"  type="text" class="form-control" th:value="${car.model}" th:name="model">
+                    <span class="validator"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Price: </label>
+                <div class="col-sm-8">
+                    <input id="price"  type="text" class="form-control" th:value="${car.price}" th:name="price">
+                    <span class="validator"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Year: </label>
+                <div class="col-sm-8">
+                    <input id="year" type="text" class="form-control" th:value="${car.year}" th:name="year">
+                    <span class="validator"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Color: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" th:name="color" >
+                        <option th:each="color : ${T(net.atos.model.enums.Color).values()}"
+                                th:value="${color}" th:text="${color}" th:selected="${color == car.color}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Hot offer? </label>
+                <div class="col-sm-8">
+                    <select class="form-control" th:name="hotOffer" >
+                        <option th:each="hotOffer : ${T(net.atos.model.enums.HotOffer).values()}"
+                                th:value="${hotOffer}" th:text="${hotOffer}" th:selected="${hotOffer == car.hotOffer}" ></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Type: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" th:name="type" >
+                        <option th:each="type : ${T(net.atos.model.enums.Type).values()}"
+                                th:value="${type}" th:text="${type}" th:selected="${type == car.type}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Status: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" th:name="status" >
+                        <option th:each="status : ${T(net.atos.model.enums.Status).values()}"
+                                th:value="${status}" th:text="${status}" th:selected="${status == car.status}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Equipments: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="equipments" multiple="multiple">
+                        <option th:each="equipment : ${equipmentsAllList}"
+                                th:value="${equipment.equipments_id}"
+                                th:text="${equipment.equipmentDescription}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"> Add image: </label>
+                <div class="col-sm-8">
+                    <input type="file" class="form-control-file" name="imageFile" accept="image/x-png,image/jpeg,image/jpg"/>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" > Update </button>
+
+            </form>
+
+
+        </div>
+        <div class="col-sm">
+            <table class="table table-sm">
+                <tr th:if="${car.equipments.empty}">
+                      <td colspan="2">
+                          <p class="text-center">No equipments</p>
+                      </td>
+                </tr>
+                <thead>
+                    <th scope="col"> Equipment </th>
+                    <th scope="col"> Delete </th>
+                </thead>
+                <tbody>
+                <tr th:each="equip : ${carEquipments.pageList}">
+                    <td th:text="${equip.equipmentDescription}"> </td>
+                    <td>
+                        <form th:action="@{'/carequipments/deletefromcar&'+${car_id}+'&'+${equip.equipments_id}}"  th:method="post" >
+                            <input type="submit" class="btn btn-danger" value="delete"/>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+                <div class="row">
+
+                        <p th:text="'Showing '+${(carEquipments.page*carEquipments.pageSize)+1}+' to '+${(carEquipments.page*carEquipments.pageSize)+carEquipments.pageList.size()}+' of '+${carEquipments.nrOfElements}+' entries'"> </p>
+                </div>
+                    <div class="row">
+                        <div class="col">
+                        <nav>
+                            <ul class="pagination justify-content-end">
+
+                                <div th:if="${!carEquipments.firstPage}">
+                                    <li class="page-item"><a class="page-link" th:href="@{'/cars/edit/'+${car.car_id}+'?pageSize=10&pageNumber='+${carEquipments.page-1}}" >Previous page</a></li>
+                                </div>
+                                <div th:unless="${!carEquipments.firstPage}">
+                                    <li class="page-item disabled"><a class="page-link">Previous page</a></li>
+                                </div>
+
+                                <div th:if="${!carEquipments.lastPage}">
+                                    <li class="page-item"><a class="page-link" th:href="@{'/cars/edit/'+${car.car_id}+'?pageSize=10&pageNumber='+${carEquipments.page+1}}" >Next page</a></li>
+                                </div>
+                                <div th:unless="${!carEquipments.lastPage}">
+                                    <li class="page-item disabled"><a class="page-link" >Next page</a></li>
+                                </div>
+                            </ul>
+                        </nav>
+                        </div>
+                    </div>
+
+
+        </div>
+
+
+
+
+        <div class="col-sm">
+            <div class="col-sm">
+                <table class="table table-sm">
+                    <tr th:if="${car.pictures.empty}">
+                        <td colspan="2">
+                            <p class="text-center">No images</p>
+                        </td>
+                    </tr>
+                    <thead>
+                    <th scope="col"> Image </th>
+                    <th scope="col"> Delete </th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="image : ${car.pictures}">
+                        <td>
+                              <a th:href="${#strings.substring(image.pathOfURL,72)}">
+                                  <img th:src="${#strings.substring(image.pathOfURL,72)}" alt="here there should be an image" width="120px" height="70px">
+                              </a>
+                        </td>
+                        <td>
+                            <form th:action="@{'/carpicture/delete&'+${car_id}+'&'+${image.carPicture_id}}" th:method="post" >
+                                <input type="submit" class="btn btn-danger" value="delete"/>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript -->
+<script src="../../vendor/jquery/jquery.slim.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+
+</body>
+</html>

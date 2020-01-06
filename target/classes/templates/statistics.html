@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title> Statistics </title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:if="${isAdmin}" href="#">Administrator panel</a>-->
+                <!--                </li>-->
+                <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <br>
+            <span class="text-center"><H2> Statistics </H2></span>
+
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-3">
+            <div class="bg-danger text-white" th:if="${futureDate != null}">
+                <p> Selected date is in the future! </p>
+            </div>
+        </div>
+    </div>
+        <div class="row justify-content-center">
+        <div class="col-5">
+            <form action="/statistics" method="get">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label"> Select month: </label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="month">
+                            <option value="0" selected>Choose...</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label"> Select year: </label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="year">
+                            <option th:value="0" selected>Choose... </option>
+                            <option th:each="year : ${yearList}"
+                                    th:value="${year}"
+                                    th:text="${year}"></option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2"> Show details </button>
+            </form>
+        </div>
+    </div>
+<!--STATYSTYKI-->
+    <div class="row">
+        <div class="col">
+            <hr class="mb-4">
+        </div>
+    </div>
+    <div th:if="${profit != null}">
+        <div class="row">
+            <div class="col">
+
+                <p th:text="'Details for ' + ${month} + ' : ' + ${year}" class="font-weight-bold"></p>
+
+                <p th:text="'Profit: '+${profit}+' zl'"></p>
+                <p th:text="'Created orders: '+${ordersNumbers}" ></p>
+
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col"> Order status </th>
+                        <th scope="col"> Amount </th>
+                    </tr>
+                    </thead>
+                    <tr th:each="element : ${ordersStatus}">
+                        <td th:text="${element.key}"></td>
+                        <td th:text="${element.value.size()}"></td>
+                    </tr>
+                </table>
+
+
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col"> User Email </th>
+                        <th scope="col"> Spendings </th>
+                    </tr>
+                    </thead>
+                    <tr th:each="userCost : ${userCost}">
+                        <td th:text="${userCost.key.email}"></td>
+                        <td th:text="${userCost.value}+'zl'"></td>
+
+                    </tr>
+                </table>
+
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col"> Brand </th>
+                        <th scope="col"> Model </th>
+                        <th scope="col"> Amount </th>
+                    </tr>
+                    </thead>
+                    <tr th:each="car : ${carStatics}">
+                        <td th:text="${car.key.mark}"></td>
+                        <td th:text="${car.key.model}"></td>
+                        <td th:text="${car.value.size()}"></td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                <p class="font-weight-bold"> Overall information </p>
+                <p th:text="'Amount of cars: ' + ${countCars}" ></p>
+
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col"> Car status </th>
+                        <th scope="col"> Amount </th>
+                    </tr>
+                    </thead>
+                    <tr th:each="element : ${carsStatus}">
+                        <td th:text="${element.key}"></td>
+                        <td th:text="${element.value}"></td>
+                    </tr>
+                </table>
+
+
+                <p th:text="'Registered users: ' + ${countUsers}" ></p>
+
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col"> User status </th>
+                        <th scope="col"> Amount </th>
+                    </tr>
+                    </thead>
+                    <tr th:each="element : ${usersStatus}">
+
+                        <div th:if="${element.key == false}">
+                            <td> Active </td>
+                        </div>
+                        <div th:unless="${element.key == false}">
+                            <td> Inactive </td>
+                        </div>
+                        <td th:text="${element.value}"></td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.slim.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

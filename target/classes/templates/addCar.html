@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/addCarValidation.js"></script>
+    <meta charset="UTF-8">
+    <title>Add new car</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list">Manage users</a>
+                            <a class="dropdown-item" href="/orders/admin">Manage orders</a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist">Manage equipments</a>
+                            <a class="dropdown-item" href="/addcar">Add car</a>
+                            <a class="dropdown-item" href="/statistics">Statistics</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <br>
+            <span class="text-center"><H2> Add new car </H2></span>
+            <hr class="mb-4">
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+             <div class="bg-warning text-dark">
+                   <table>
+                        <tr th:if="${warningList!=null and !warningList.empty}"> Car has been successfully added but some images have been rejected.</tr>
+                        <tr th:each="errors: ${warningList}" >
+                             <td th:text="'- '+${errors}" />
+                        </tr>
+                   </table>
+             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm">
+            <span id="errorSubmit"></span>
+            <div th:if="${not #strings.isEmpty(result)}">
+                <p class="bg-success text-white text-center" th:text="${result}"></p>
+            </div>
+        </div>
+        <div class="col-sm"></div>
+    </div>
+    <form th:action="@{/addcar}" th:object="${carDto}" method="post" onSubmit="return validate();" enctype="multipart/form-data">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-check-label"> Brand: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('mark')}" th:errors="*{mark}">mark error</label>
+                    <input id="brand" type="text" class="form-control" placeholder="Enter brand" th:field="*{mark}" />
+                    <span class="validator"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Model: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('model')}" th:errors="*{model}">model error</label>
+                    <input id="model" type="text" class="form-control" placeholder="Enter model" th:field="*{model}" />
+                    <span class="validator"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Year of production: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('year')}" th:errors="*{year}">year error</label>
+                    <label class="small text-danger" th:text="${yearInFuture}">future year error</label>
+                    <input id="year" type="text" class="form-control" placeholder="Enter year" th:field="*{year}" maxlength="4" />
+                    <span class="validator"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Price: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">price error</label>
+                    <input id="price" class="form-control" placeholder="Enter price" th:field="*{price}" />
+                    <span class="validator"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Color: </label>
+                    <select class="form-control" th:field="*{color}">
+                        <option th:each="color : ${T(net.atos.model.enums.Color).values()}"
+                                th:value="${color}" th:text="${color}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Hot offer? </label>
+                    <select class="form-control" th:field="*{hotOffer}" >
+                        <option th:each="hotOffer : ${T(net.atos.model.enums.HotOffer).values()}"
+                                th:value="${hotOffer}" th:text="${hotOffer}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Type: </label>
+                    <select class="form-control" th:field="*{type}">
+                        <option th:each="type : ${T(net.atos.model.enums.Type).values()}"
+                                th:value="${type}" th:text="${type}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-check-label"> Add images: </label>
+
+                    <div th:each="i : ${#numbers.sequence(0,3)}">
+                        <input type="file" class="form-control-file" th:field="*{pictures[__${i}__].pathOfURL}" th:id="'file'+${i}" accept="image/x-png,image/jpeg,image/jpg" />
+                        <span th:id="'file_error'+${i}"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label"> Choose equipment: </label>
+                    <select class="form-control" th:field="*{equipments}" multiple="multiple">
+                        <option th:each="equipt : ${carEquipmentsListSelect}"
+                                th:value="${equipt.equipments_id}"
+                                th:text="${equipt.equipmentDescription}"></option>
+                    </select>
+                </div>
+                <div id="submit">
+                    <button type="submit" class="btn btn-primary" > Add </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="vendor/jquery/jquery.slim.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

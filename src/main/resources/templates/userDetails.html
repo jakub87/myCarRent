@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/registerUserValidation.js"></script>
+    <meta charset="UTF-8">
+    <title> Your profile </title>
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li>
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                   <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+
+        </div>
+        <div class="col-5">
+                      <br>
+             <span class="text-center">
+                  <h2> Edit your profile </h2>
+             </span>
+<!--            <p class="bg-danger text-white text-center">There are errors in form!</p>-->
+            <div class="bg-success text-white"  style="width: 14rem;" th:if="${not #strings.isEmpty(result)}">
+                <p th:text="${result}"></p>
+            </div>
+
+            <div class="bg-danger text-white" style="width: 18rem;" th:if="${not #strings.isEmpty(error)}">
+                <p th:text="${error}"></p>
+            </div>
+
+                    <form th:action="@{'/users/userdetails/'+${user.user_id}}" th:method="post" th:object="${UserDto}" >
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> First name: </label>
+                            <div class="col-sm-8">
+                                <input id="firstName" type="text" class="form-control" th:value="${user.firstName}" th:name="firstName">
+                                <span class="validator"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Last name: </label>
+                            <div class="col-sm-8">
+                                <input id="lastName" type="text" class="form-control" th:value="${user.lastName}" th:name="lastName">
+                                <span class="validator"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Email address: </label>
+                            <div class="col-sm-8">
+                                <input type="text" disabled="disabled"  class="form-control" th:value="${user.email}" th:name="email">
+                                <span class="validator"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> City: </label>
+                            <div class="col-sm-8">
+                                <input id="city" type="text" class="form-control" th:value="${user.city}" th:name="city">
+                                <span class="validator"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Mobile number: </label>
+                            <div class="col-sm-8">
+                                <input id="mobileNumber" type="text" class="form-control" th:value="${user.mobileNumber}" th:name="mobileNumber">
+                                <span class="validator"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
+
+
+</div>
+
+<script src="../../vendor/jquery/jquery.slim.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

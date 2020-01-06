@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/registerUserValidation.js"></script>
+    <meta charset="UTF-8">
+    <title>Register user</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <br>
+            <span class="text-center"><H2> Sign Up </H2></span>
+            <hr class="mb-4">
+            <span id="errorSubmit"></span>
+            <form th:action="@{/registration}" th:object="${userDto}" method="post">
+
+                <div class="form-group">
+                    <label class="form-check-label"> First name: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></label>
+                    <input id="firstName" type="text" class="form-control" th:field="*{firstName}" placeholder="Enter first name"/>
+                    <span class="validator"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check-label"> Last name: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></label>
+                    <input id="lastName" type="text" class="form-control" th:field="*{lastName}" placeholder="Enter last name"/>
+                    <span class="validator"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check-label"> Email address: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></label>
+                    <label class="small text-danger" th:text="${existingEmail}">existing email</label>
+                    <input id="email" type="text" class="form-control" th:field="*{email}" placeholder="Enter email address" maxlength="45"/>
+                    <span class="validator"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check-label"> Password: </label>
+                    <label class="small text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></label>
+                    <input id="password" type="password" th:field="*{password}" class="form-control" placeholder="Password"/>
+                    <span class="validator"></span>
+                </div>
+
+                <div class="form-check-label">
+                    <label> Have you an account? <a href="/login">Login</a></label>
+                </div>
+                <div id="submit">
+                    <button type="submit" class="btn btn-primary"> Sing Up </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="vendor/jquery/jquery.slim.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

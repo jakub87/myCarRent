@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org”>
+<head>
+       <meta charset="UTF-8">
+    <title> Hot offers </title>
+
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <small th:text="'Welcome, '+${logged_email}">  </small>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/login">Log in </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, 'Guest!')}" href="/registration">Create an account </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/users/userdetails">Your profile </a>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/orders">Your orders </a>
+                <div th:if="${#strings.contains(logged_email, '@')}" class="dropdown-divider"></div>
+                <a class="dropdown-item" th:if="${#strings.contains(logged_email, '@')}" href="/logout">Log out </a>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li>
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allcars">Car list</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/cars/hotoffers">Hot offers</a>
+                </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:if="${isAdmin}" href="#">Administrator panel</a>-->
+                <!--                </li>-->
+                <li th:if="${isAdmin}" class="nav-item">
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrator panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/users/list"> Manage users </a>
+                            <a class="dropdown-item" href="/orders/admin"> Manage orders </a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
+                            <a class="dropdown-item" href="/addcar"> Add car </a>
+                            <a class="dropdown-item" href="/statistics"> Statistics </a>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="container">
+    <br>
+
+
+    <div th:if="${carHotOffersList.empty}">
+
+            <div class="d-flex justify-content-center">
+            <p class="font-weight-bold text-uppercase">No hot offers available.</p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="row" th:if="${!carHotOffersList.empty}">
+
+        <div class="col-sm-4" th:each="car : ${carHotOffersList}">
+
+<!--            <div th:if="${!orderList.empty}">-->
+            <div class="card card-body">
+
+                    <h3 class="card-title text-center" th:text="${car.mark}+' '+${car.model}" ></h3>
+                <div class="d-flex justify-content-center">
+                    <span class="badge badge-success" style="width: 5rem;"> Hot offer! </span></h3>
+                </div>
+                    <br>
+                <div th:each="image, iterStat : ${car.pictures}"  th:if="${iterStat.index == 0}" >
+                    <img th:src="${#strings.substring(image.pathOfURL,72)}" class="card-img-top" alt="here should be image">
+                </div>
+                    <br>
+
+                <div class="row">
+                    <div class="col" >
+
+                            <p class="font-weight-bold" th:text="${car.price}+ ' zl'" > </p>
+
+                        </div>
+                    <div class="col">
+                        <a th:href="@{/detailsofcar/{id}(id=${car.car_id})}" class="btn btn-primary"> See details </a>
+                    </div>
+                </div>
+
+
+
+<!--                <p> cena </p>-->
+
+
+            </div>
+    </div>
+
+
+
+    </div>
+
+    <hr class="mb-4">
+
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            <div th:if="${carHotOffersList.hasPrevious()}">
+                <li class="page-item"><a class="page-link" th:href="@{'/cars/hotoffers?pageSize=3&pageNumber='+${carHotOffersList.number-1}}" >Previous page</a></li>
+            </div>
+            <div th:unless="${carHotOffersList.hasPrevious()}">
+                <li class="page-item disabled"><a class="page-link">Previous page</a></li>
+            </div>
+
+            <div th:if="${carHotOffersList.hasNext()}">
+                <li class="page-item"><a class="page-link" th:href="@{'/cars/hotoffers?pageSize=3&pageNumber='+${carHotOffersList.number+1}}" >Next page</a></li>
+            </div>
+            <div th:unless="${carHotOffersList.hasNext()}">
+                <li class="page-item disabled"><a class="page-link" >Next page</a></li>
+            </div>
+
+
+
+        </ul>
+    </nav>
+    </div>
+
+
+
+</div>
+<!-- Bootstrap core JavaScript -->
+<script src="../vendor/jquery/jquery.slim.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+
