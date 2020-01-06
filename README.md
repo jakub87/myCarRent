@@ -75,6 +75,15 @@
         <li> dodanie możliwości dodawania/zabierania praw admina oraz deaktywacja/aktywacja uzytkownika</li>
         <li> tworzenie frontendu dla widoków w toku </li> 
     </ul>    
-        
+<p> 06.01.2020</p>
+    <ul>
+        <li> zrobione wszystkie widoki </li>
+        <li> dodana validacja na frontendzie </li>
+        <li> dodano moduł statystyk które pokazuje podsumowanie miesiąca (zysk, ile złożono zamówień, ile rezerwacji anulowano, statusy pojazdów itp. ) </li>
+        <li> dodano kare za anulowanie rezerwacji pojazdu; dzień, dwa lub trzy przed startem rezerwacji </li>
+        <li> refaktoring kodu </li>
+    </ul>        
+    
+    
     
     
