@@ -122,8 +122,10 @@ public class OrderService {
             newPrice = order.getCost().multiply(BigDecimal.valueOf(0.15));
         } else if (daysToStartRent == 3) {
             newPrice = order.getCost().multiply(BigDecimal.valueOf(0.1));
-        } else {
+        } else if (daysToStartRent > 3) {
             newPrice = BigDecimal.ZERO;
+        } else {
+            newPrice = order.getCost();
         }
 
         order.setLastEditDate(dateNow);

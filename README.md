@@ -83,15 +83,18 @@
         <li> dodano kare za anulowanie rezerwacji pojazdu; dzień, dwa lub trzy przed startem rezerwacji </li>
         <li> refaktoring kodu </li>
     </ul>        
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h28_10.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h32_40.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h33_20.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h33_32.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h34_03.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h34_31.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h34_41.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h36_23.png" alt="" width="300" height="300">  
+ <p> 07.03.2020</p>
+     <ul>
+         <li> dodano walidacje dla rozmiaru zdjęć </li>
+         <li> poprawiono inne błędy </li>
+    </ul>  
 <img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h38_01.png" alt="" width="300" height="300">  
-    
-    
-    
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-03_22h33_27.png" alt="">  
+   2020-03-03_22h34_46.png
+   2020-03-07_22h00_25.png
+   2020-03-07_22h01_33.png    
+   2020-03-07_22h08_40.png   
+   2020-03-07_22h09_23.png 
+   2020-03-07_22h09_47.png
+   2020-03-07_22h10_59.png
+   2020-03-07_22h17_37.png

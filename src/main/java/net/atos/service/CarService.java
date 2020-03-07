@@ -42,9 +42,9 @@ public class CarService
 
     private boolean addImage(MultipartFile image, Car car) throws IOException {
         if (!image.isEmpty()) {
-            if (image.getOriginalFilename().endsWith(".jpeg")  ||
-                image.getOriginalFilename().endsWith(".jpg")   ||
-                image.getOriginalFilename().endsWith(".png")) {
+            if (image.getOriginalFilename().toLowerCase().endsWith(".jpeg")  ||
+                image.getOriginalFilename().toLowerCase().endsWith(".jpg")   ||
+                image.getOriginalFilename().toLowerCase().endsWith(".png")) {
                 if (!carPictureRepository.existsCarPictureByPathOfURL(CAR_PATH_NAME+car.getCar_id()+"\\"+image.getOriginalFilename())) {
                     convertToFile(CAR_PATH_NAME+car.getCar_id(),image);
                     CarPicture imageTemp = new CarPicture(CAR_PATH_NAME+car.getCar_id()+"\\"+image.getOriginalFilename(),car);

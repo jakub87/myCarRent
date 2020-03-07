@@ -42,7 +42,7 @@ public class EquipmentsController {
         model.addAttribute("selectedPageSize",pageSize);
         model.addAttribute("logged_email",loginService.getLoginFromCredentials(auth));
         model.addAttribute("isAdmin",loginService.isAdmin(auth));
-        return "careq";
+        return "carEquipments";
     }
 
     @PostMapping("/carEquipments/delete/{id}")
@@ -57,17 +57,17 @@ public class EquipmentsController {
                                   BindingResult bindingResult,
                                   RedirectAttributes redirectAttributes)
     {
-            if (bindingResult.hasErrors()){
-                redirectAttributes.addFlashAttribute("error", "Incorrect characters!");
-            }
-            else if (equipmentsService.addCarEquipment(equipmentsDto)) {
-               redirectAttributes.addFlashAttribute("result", "Equipment has been added.");
-            }
-            else{
-               redirectAttributes.addFlashAttribute("warning", "Provided equipment already exists!");
-            }
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", "Incorrect characters!");
+        }
+        else if (equipmentsService.addCarEquipment(equipmentsDto)) {
+            redirectAttributes.addFlashAttribute("result", "Equipment has been added.");
+        }
+        else{
+            redirectAttributes.addFlashAttribute("warning", "Provided equipment already exists!");
+        }
 
-           return "redirect:/carEquipments/equipmentslist";
+        return "redirect:/carEquipments/equipmentslist";
     }
 
     @PostMapping("/carequipments/deletefromcar&{car_id}&{equipments_id}")
@@ -88,7 +88,7 @@ public class EquipmentsController {
                                       @RequestParam Long car_id)
     {
         if (equipments_id == -1) {
-             return "redirect:/cars/edit/"+car_id;
+            return "redirect:/cars/edit/"+car_id;
         }
 
         equipmentsService.addEquipmentFromCar(car_id,equipments_id);

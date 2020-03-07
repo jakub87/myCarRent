@@ -17,31 +17,25 @@ function calculate()
         var presentDate = new Date();
         presentDate.setDate(presentDate.getDate() - 1); // minus the date
         var carPrice = $('#carPrice').val();
-
-
         var summary;
         var result;
         var cost;
 
-        if( startDate < presentDate )
-        {
+        if( startDate < presentDate ) {
               result = "Start date is in the past.";
-        }
-        else if (endDate < presentDate )
-        {
+              cost = "";
+        } else if (endDate < presentDate ) {
             result = "End date is in the past.";
-        }
-        else if (endDate >= startDate)
-        {
+            cost = "";
+        }else if (endDate >= startDate) {
             var difference = new Date(endDate - startDate);
             var duration = Math.round(difference/1000/60/60/24) + 1;
             var price = carPrice * duration;
             result = "Duration: "+duration+" days.";
             cost = "Overall cost: "+price+"zl";
             summary = "Summary";
-        }
-        else{
-              result = "Start date is later than end date.";
+        }else {result = "Start date is later than end date.";
+              cost = "";
         }
 
         $('#summary').text(summary);

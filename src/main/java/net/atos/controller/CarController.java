@@ -107,13 +107,13 @@ public class CarController{
         return "redirect:/addcar";
     }
 
-    @GetMapping("/add/newcar/")
-    public String resultOfNewCar(@ModelAttribute("imagesWithErrors")  List<String> imagesWithErrors,
-                                 Model model)
-    {
-        model.addAttribute("imagesWithErrors",imagesWithErrors);
-        return "resultOfAddCar";
-    }
+//    @GetMapping("/add/newcar/")
+//    public String resultOfNewCar(@ModelAttribute("imagesWithErrors")  List<String> imagesWithErrors,
+//                                 Model model)
+//    {
+//        model.addAttribute("imagesWithErrors",imagesWithErrors);
+//        return "resultOfAddCar";
+//    }
 
     @GetMapping("/allcars")
     public String getAllCars(

@@ -75,7 +75,7 @@ public class StatisticsService {
     }
 
 
-    public Map <OrderStatus,List<Order>> orderStatus(int year, int month)  { //ok
+    public Map <OrderStatus,List<Order>> orderStatus(int year, int month)  {
 
         Map<OrderStatus, List<Order>> groupByOrders = orderRepository.findAllFinishedOrders()
                 .stream()

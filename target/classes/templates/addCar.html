@@ -3,6 +3,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="/js/addCarValidation.js"></script>
+    <script src="/js/carValidation.js"></script>
     <meta charset="UTF-8">
     <title>Add new car</title>
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -44,7 +45,7 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="/users/list">Manage users</a>
                             <a class="dropdown-item" href="/orders/admin">Manage orders</a>
-                            <a class="dropdown-item" href="/carEquipments/equipmentslist">Manage equipments</a>
+                            <a class="dropdown-item" href="/carEquipments/equipmentslist"> Manage equipments </a>
                             <a class="dropdown-item" href="/addcar">Add car</a>
                             <a class="dropdown-item" href="/statistics">Statistics</a>
                         </div>
@@ -141,8 +142,9 @@
                     <label class="form-check-label"> Add images: </label>
 
                     <div th:each="i : ${#numbers.sequence(0,3)}">
-                        <input type="file" class="form-control-file" th:field="*{pictures[__${i}__].pathOfURL}" th:id="'file'+${i}" accept="image/x-png,image/jpeg,image/jpg" />
-                        <span th:id="'file_error'+${i}"></span>
+                        <input type="file" class="form-control-file" th:field="*{pictures[__${i}__].pathOfURL}" th:id="file-upload+${i}" accept="image/x-png,image/jpeg,image/jpg" />
+<!--                        <span th:id="'file_error'+${i}"></span>-->
+                        <span class="validator"></span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -154,7 +156,7 @@
                     </select>
                 </div>
                 <div id="submit">
-                    <button type="submit" class="btn btn-primary" > Add </button>
+                    <button id="btnSubmit" type="submit" class="btn btn-primary" > Add </button>
                 </div>
             </div>
         </div>

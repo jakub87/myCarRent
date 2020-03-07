@@ -67,19 +67,11 @@
         <div class="col-5">
                       <br>
              <span class="text-center">
-                  <h2> Edit your profile </h2>
+                        <h2 th:text="${header}"></h2>
              </span>
-<!--            <p class="bg-danger text-white text-center">There are errors in form!</p>-->
-            <div class="bg-success text-white"  style="width: 14rem;" th:if="${not #strings.isEmpty(result)}">
-                <p th:text="${result}"></p>
-            </div>
 
-            <div class="bg-danger text-white" style="width: 18rem;" th:if="${not #strings.isEmpty(error)}">
-                <p th:text="${error}"></p>
-            </div>
-
-                    <form th:action="@{'/users/userdetails/'+${user.user_id}}" th:method="post" th:object="${UserDto}" >
-                        <div class="form-group row">
+                <form th:action="@{'/users/userdetails/'+${user.user_id}}" th:method="post" th:object="${UserDto}" >
+                <div class="form-group row">
                             <label class="col-sm-4 col-form-label"> First name: </label>
                             <div class="col-sm-8">
                                 <input id="firstName" type="text" class="form-control" th:value="${user.firstName}" th:name="firstName">
@@ -113,6 +105,12 @@
                                 <input id="mobileNumber" type="text" class="form-control" th:value="${user.mobileNumber}" th:name="mobileNumber">
                                 <span class="validator"></span>
                             </div>
+                        </div>
+                        <div class="bg-success text-white text-center" th:if="${not #strings.isEmpty(result)}">
+                            <p  th:text="${result}"></p>
+                        </div>
+                        <div class="bg-danger text-white text-center" th:if="${not #strings.isEmpty(error)}">
+                            <p  th:text="${error}"></p>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Update</button>

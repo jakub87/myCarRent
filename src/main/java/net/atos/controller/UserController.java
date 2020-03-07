@@ -71,16 +71,16 @@ public class UserController
 
     @GetMapping("/users/list") //lista uzytkownikow
     public String showAllUsers(
-                       @RequestParam (value = "pageSize", defaultValue = "5") int pageSize,
-                       @RequestParam (value = "pageNumber", defaultValue = "0") int pageNumber,
-                       @RequestParam (value = "value", defaultValue = "") String value,
-                       Authentication auth,
-                        Model model) {
+            @RequestParam (value = "pageSize", defaultValue = "5") int pageSize,
+            @RequestParam (value = "pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam (value = "value", defaultValue = "") String value,
+            Authentication auth,
+            Model model) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         Page <User> pageUsers = userService.getAllUsers(value, pageable);
 
-         model.addAttribute("selectedPageSize",pageSize);
+        model.addAttribute("selectedPageSize",pageSize);
         model.addAttribute("pageUsers",pageUsers);
         model.addAttribute("logged_email",loginService.getLoginFromCredentials(auth));
         model.addAttribute("isAdmin",loginService.isAdmin(auth));
@@ -102,14 +102,18 @@ public class UserController
                                  Authentication auth) {
         User user;
         Optional<Long> getUserid = Optional.ofNullable(user_id);
+        String loggedUser = loginService.getLoginFromCredentials(auth);
 
-        if (getUserid.isPresent()) {
+        if (getUserid.isPresent()) { // tutaj sprawdzenie czy admin edytuje swoje dane osobowe
             user = userService.getUserById(user_id);
+            String userDetailsHeader = loggedUser.equals(user.getEmail()) ? "Edit your profile" : "Person details";
+            model.addAttribute("header",userDetailsHeader);
         } else {
             user = userService.findUserByEmail(loginService.getLoginFromCredentials(auth));
+            model.addAttribute("header","Edit your profile");
         }
         model.addAttribute("user", user);
-        model.addAttribute("logged_email",loginService.getLoginFromCredentials(auth));
+        model.addAttribute("logged_email",loggedUser);
         model.addAttribute("isAdmin",loginService.isAdmin(auth));
         return "userDetails";
     }
@@ -118,6 +122,7 @@ public class UserController
     public String updateUserData(@ModelAttribute @Valid UserDto userDto,
                                  BindingResult bindingResult,
                                  @PathVariable ("id") Long id,
+                                 Authentication auth,
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("error","Incorrect value in field "+bindingResult.getFieldError().getField()+ "!");
@@ -125,9 +130,19 @@ public class UserController
         }
 
         userService.updateUserDataNew(id,userDto.getFirstName(),userDto.getLastName(),userDto.getCity(),userDto.getMobileNumber());
-        redirectAttributes.addFlashAttribute("result","Your data have been updated.");
+        String loggedUser = loginService.getLoginFromCredentials(auth);
 
-        return "redirect:/users/userdetails";
+        if (loginService.isAdmin(auth)) {
+            System.out.println("jestem adminem");
+            String result = loggedUser.equals(userService.getUserById(id).getEmail()) ? "Your data have been updated." : "Data have been changed.";
+            redirectAttributes.addFlashAttribute("result",result);
+
+            return "redirect:/users/userdetails/"+id;
+        } else {
+            System.out.println("zwykly uzytkownik");
+            redirectAttributes.addFlashAttribute("result","Your data have been updated.");
+            return "redirect:/users/userdetails";
+        }
     }
 
     @PostMapping("/user/makeorder/{id}")
@@ -137,34 +152,34 @@ public class UserController
                             RedirectAttributes redirectAttributes) {
 
 
-            if (orderDto.getStartDate() == null || orderDto.getEndDate() == null) { // ktoras z dat jest pusta
-                redirectAttributes.addFlashAttribute("emptyDates", "emptyDates");
-                return "redirect:/detailsofcar/"+id;
-            }
+        if (orderDto.getStartDate() == null || orderDto.getEndDate() == null) { // ktoras z dat jest pusta
+            redirectAttributes.addFlashAttribute("emptyDates", "emptyDates");
+            return "redirect:/detailsofcar/"+id;
+        }
 
-            if (orderDto.getStartDate().isBefore(LocalDate.now())) { //start date jest w przeszlosci
-                redirectAttributes.addFlashAttribute("startDateInPast", "startDateInPast");
-                return "redirect:/detailsofcar/"+id;
-            }
+        if (orderDto.getStartDate().isBefore(LocalDate.now())) { //start date jest w przeszlosci
+            redirectAttributes.addFlashAttribute("startDateInPast", "startDateInPast");
+            return "redirect:/detailsofcar/"+id;
+        }
 
-            if (orderDto.getEndDate().isBefore(LocalDate.now())) { // end date jest przeszlosci
-                redirectAttributes.addFlashAttribute("endDateInPast", "endDateInPast");
-                return "redirect:/detailsofcar/"+id;
-            }
-            if (orderDto.getStartDate().isAfter(orderDto.getEndDate())) {// start date jest pozniej niz end date
-                redirectAttributes.addFlashAttribute("startDateLaterThanEndDate", "startDateLaterThanEndDate");
-                return "redirect:/detailsofcar/"+id;
-            }
+        if (orderDto.getEndDate().isBefore(LocalDate.now())) { // end date jest przeszlosci
+            redirectAttributes.addFlashAttribute("endDateInPast", "endDateInPast");
+            return "redirect:/detailsofcar/"+id;
+        }
+        if (orderDto.getStartDate().isAfter(orderDto.getEndDate())) {// start date jest pozniej niz end date
+            redirectAttributes.addFlashAttribute("startDateLaterThanEndDate", "startDateLaterThanEndDate");
+            return "redirect:/detailsofcar/"+id;
+        }
 
-            Car car = carService.getCarById(id);
-            String emailOfUser = loginService.getLoginFromCredentials(auth);
+        Car car = carService.getCarById(id);
+        String emailOfUser = loginService.getLoginFromCredentials(auth);
 
-            User user = userService.findUserByEmail(emailOfUser);
+        User user = userService.findUserByEmail(emailOfUser);
 
-            if (!orderService.checkAvailabilityOfCar(id,orderDto.getStartDate(),orderDto.getEndDate())) {//jesli termin jest zajety
-                redirectAttributes.addFlashAttribute("occupied", "Between "+orderDto.getStartDate()+" and "+orderDto.getEndDate()+ " vehicle is busy.");
-                return "redirect:/detailsofcar/"+id;
-            }
+        if (!orderService.checkAvailabilityOfCar(id,orderDto.getStartDate(),orderDto.getEndDate())) {//jesli termin jest zajety
+            redirectAttributes.addFlashAttribute("occupied", "Between "+orderDto.getStartDate()+" and "+orderDto.getEndDate()+ " vehicle is busy.");
+            return "redirect:/detailsofcar/"+id;
+        }
 
         //tworzenie zamowienia
         Period period = Period.between(orderDto.getStartDate(),orderDto.getEndDate());

@@ -74,9 +74,6 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-3">
-            <div class="bg-danger text-white" th:if="${futureDate != null}">
-                <p> Selected date is in the future! </p>
-            </div>
         </div>
     </div>
         <div class="row justify-content-center">
@@ -114,6 +111,9 @@
                         </select>
                     </div>
                 </div>
+                <div class="bg-danger text-white text-center" th:if="${futureDate != null}">
+                    <p>Selected date is in the future!</p>
+                </div>
                 <button type="submit" class="btn btn-primary mb-2"> Show details </button>
             </form>
         </div>
@@ -140,6 +140,10 @@
                         <th scope="col"> Amount </th>
                     </tr>
                     </thead>
+                    <tr th:if="${ordersStatus.empty}">
+                        <td colspan="2" class="text-center text-uppercase"> No orders available. </td>
+                    </tr>
+
                     <tr th:each="element : ${ordersStatus}">
                         <td th:text="${element.key}"></td>
                         <td th:text="${element.value.size()}"></td>
@@ -154,6 +158,9 @@
                         <th scope="col"> Spendings </th>
                     </tr>
                     </thead>
+                    <tr th:if="${userCost.empty}">
+                        <td colspan="2" class="text-center text-uppercase"> No users available. </td>
+                    </tr>
                     <tr th:each="userCost : ${userCost}">
                         <td th:text="${userCost.key.email}"></td>
                         <td th:text="${userCost.value}+'zl'"></td>
@@ -169,6 +176,9 @@
                         <th scope="col"> Amount </th>
                     </tr>
                     </thead>
+                    <tr th:if="${userCost.empty}">
+                        <td colspan="3" class="text-center text-uppercase"> No cars available. </td>
+                    </tr>
                     <tr th:each="car : ${carStatics}">
                         <td th:text="${car.key.mark}"></td>
                         <td th:text="${car.key.model}"></td>

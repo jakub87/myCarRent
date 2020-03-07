@@ -37,4 +37,12 @@ public class LoginService {
                 ).orElse(false);
     }
 
+
+//    public String getLoginUsername(Authentication auth) {
+//        UserDetails userDetail = (UserDetails) auth.getPrincipal();
+//        return  userDetail.getUsername();
+//    }
+
+
+
 }

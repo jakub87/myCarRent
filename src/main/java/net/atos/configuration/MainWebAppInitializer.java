@@ -13,7 +13,7 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
 
 
     private String TMP_FOLDER = "/static";
-    private int MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // rozmiar w bajtach? 5 242 880 \\\ 476 628 ||  5 * 1024 * 1024; // 5 MB
+    private int MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // rozmiar w bajtach? 5 242 880 \\\ 476 628 ||  5 * 1024 * 1024; // 5 MB // 1048576
 
 
     @Override
