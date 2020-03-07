@@ -88,13 +88,18 @@
          <li> dodano walidacje dla rozmiaru zdjęć </li>
          <li> poprawiono inne błędy </li>
     </ul>  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-01-06_19h38_01.png" alt="" width="300" height="300">  
-<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-03_22h33_27.png" alt="">  
-   2020-03-03_22h34_46.png
-   2020-03-07_22h00_25.png
-   2020-03-07_22h01_33.png    
-   2020-03-07_22h08_40.png   
-   2020-03-07_22h09_23.png 
-   2020-03-07_22h09_47.png
-   2020-03-07_22h10_59.png
-   2020-03-07_22h17_37.png
+
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-03_22h33_27.png" alt="">
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-03_22h34_46.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h00_25.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h01_33.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h08_40.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h09_23.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h09_47.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h10_59.png" alt="">   
+<img src="https://github.com/jakub87/myCarRent/blob/master/src/main/resources/static/images/2020-03-07_22h17_37.png" alt="">   
+  
+     
+   
+ 
+   
