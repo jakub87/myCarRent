@@ -1,4 +1,4 @@
-# myCarRent
+# Car Rental
 <p> Aplikacja będzie napisana w Springu z wykorzystaniem następujących technologii:</p>
 <ul>
     <li> Spring MVC  </li>
